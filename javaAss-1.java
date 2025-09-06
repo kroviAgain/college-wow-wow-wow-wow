@@ -1,140 +1,167 @@
 import java.util.Scanner;
 
-class Account {
-    private int accountNumber;
-    private String accountHolder;
-    private double balance;
+class Acc {
+    int accNo;
+    String holder;
+    double bal;
+    String mail;
+    String phone;
 
-    public Account(int accountNumber, String accountHolder, double balance) {
-        this.accountNumber = accountNumber;
-        this.accountHolder = accountHolder;
-        this.balance = balance;
+    Acc(int a, String h, double b, String m, String p) {
+        accNo = a;
+        holder = h;
+        bal = b;
+        mail = m;
+        phone = p;
     }
 
-    void deposit(double amount) {
-        if (amount > 0) {
-            balance += amount;
-            System.out.println("Deposited: " + amount);
+    void deposit(double amt) {
+        if (amt > 0) {
+            bal = bal + amt;
+            System.out.println("Deposited: " + amt);
         } else {
-            System.out.println("Invalid amount!");
+            System.out.println("Deposit must be positive!");
         }
     }
 
-    void withdraw(double amount) {
-        if (amount > 0 && amount <= balance) {
-            balance -= amount;
-            System.out.println("Withdrawn: " + amount);
+    void withdraw(double amt) {
+        if (amt > 0 && bal >= amt) {
+            bal = bal - amt;
+            System.out.println("Withdrawn: " + amt);
         } else {
-            System.out.println("Invalid withdrawal or insufficient balance!");
+            System.out.println("Not possible to withdraw that amount!");
         }
     }
 
-    void display() {
-        System.out.println("Account Number: " + accountNumber);
-        System.out.println("Account Holder: " + accountHolder);
-        System.out.println("Balance: " + balance);
-        System.out.println("--------------------------");
+    void show() {
+        System.out.println("\n-- Account Info --");
+        System.out.println("Account No: " + accNo);
+        System.out.println("Name: " + holder);
+        System.out.println("Balance: " + bal);
+        System.out.println("Email: " + mail);
+        System.out.println("Phone: " + phone);
     }
 
-    public int getAccountNumber() {
-        return accountNumber;
+    void update(String newMail, String newPhone) {
+        mail = newMail;
+        phone = newPhone;
+        System.out.println("Contact updated.");
     }
 }
 
-public class bank {
-    public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);
-        Account[] accounts = new Account[10];
-        int accountCount = 0;
+class UI {
+    Acc[] list;
+    int count;
+    int nextNo = 1001;
+    Scanner in = new Scanner(System.in);
 
-        while (true) {
-            System.out.println("\n===== Bank Menu =====");
-            System.out.println("1. Create Account");
-            System.out.println("2. Deposit Money");
-            System.out.println("3. Withdraw Money");
-            System.out.println("4. Check Balance");
-            System.out.println("5. Display All Accounts");
-            System.out.println("6. Exit");
-            System.out.print("Enter your choice: ");
-            int choice = scan.nextInt();
+    UI(int size) {
+        list = new Acc[size];
+        count = 0;
+    }
 
-            if (choice == 1) {
-                if (accountCount < accounts.length) {
-                    System.out.print("Enter Account Number: ");
-                    int accNo = scan.nextInt();
-                    scan.nextLine();
-                    System.out.print("Enter Account Holder Name: ");
-                    String name = scan.nextLine();
-                    System.out.print("Enter Initial Balance: ");
-                    double bal = scan.nextDouble();
-
-                    accounts[accountCount] = new Account(accNo, name, bal);
-                    accountCount++;
-                    System.out.println("  Account Created Successfully!");
-                } else {
-                    System.out.println("Bank limit reached. Cannot create more accounts.");
-                }
-
-            } else if (choice == 2) {
-                System.out.print("Enter Account Number: ");
-                int tempnumber = scan.nextInt();
-                boolean found = false;
-                for (int i = 0; i < accountCount; i++) {
-                    if (accounts[i].getAccountNumber() == tempnumber) {
-                        System.out.print("Enter amount to deposit: ");
-                        double amt = scan.nextDouble();
-                        accounts[i].deposit(amt);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) System.out.println("  Account not found!");
-
-            } else if (choice == 3) {
-                System.out.print("Enter Account Number: ");
-                int tempnumber = scan.nextInt();
-                boolean found = false;
-                for (int i = 0; i < accountCount; i++) {
-                    if (accounts[i].getAccountNumber() == tempnumber) {
-                        System.out.print("Enter amount to withdraw: ");
-                        double amt = scan.nextDouble();
-                        accounts[i].withdraw(amt);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) System.out.println("  Account not found!");
-
-            } else if (choice == 4) {
-                System.out.print("Enter Account Number: ");
-                int tempnumber = scan.nextInt();
-                boolean found = false;
-                for (int i = 0; i < accountCount; i++) {
-                    if (accounts[i].getAccountNumber() == tempnumber) {
-                        accounts[i].display();
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) System.out.println("Account not found!");
-
-            } else if (choice == 5) {
-                if (accountCount == 0) {
-                    System.out.println("No accounts available.");
-                } else {
-                    for (int i = 0; i < accountCount; i++) {
-                        accounts[i].display();
-                    }
-                }
-
-            } else if (choice == 6) {
-                System.out.println("Thank you for using the Bank System. Goodbye!");
-                scan.close();
-                System.exit(0);
-
-            } else {
-                System.out.println("Invalid choice! Try again.");
+    Acc find(int no) {
+        for (int i = 0; i < count; i++) {
+            if (list[i].accNo == no) {
+                return list[i];
             }
         }
+        return null;
+    }
+
+    void makeAcc() {
+        int no = nextNo++;
+        in.nextLine(); // clear buffer
+        System.out.print("Enter name: ");
+        String name = in.nextLine();
+        System.out.print("Enter opening balance: ");
+        double b = in.nextDouble();
+        in.nextLine();
+        System.out.print("Enter email: ");
+        String mail = in.nextLine();
+        System.out.print("Enter phone: ");
+        String ph = in.nextLine();
+
+        list[count++] = new Acc(no, name, b, mail, ph);
+        System.out.println("Account made! Your acc no is " + no);
+    }
+
+    void doDeposit() {
+        System.out.print("Enter acc no: ");
+        int no = in.nextInt();
+        System.out.print("Enter deposit amt: ");
+        double amt = in.nextDouble();
+        Acc a = find(no);
+        if (a != null) a.deposit(amt);
+        else System.out.println("Acc not found!");
+    }
+
+    void doWithdraw() {
+        System.out.print("Enter acc no: ");
+        int no = in.nextInt();
+        System.out.print("Enter withdraw amt: ");
+        double amt = in.nextDouble();
+        Acc a = find(no);
+        if (a != null) a.withdraw(amt);
+        else System.out.println("Acc not found!");
+    }
+
+    void showAcc() {
+        System.out.print("Enter acc no: ");
+        int no = in.nextInt();
+        Acc a = find(no);
+        if (a != null) a.show();
+        else System.out.println("Acc not found!");
+    }
+
+    void changeContact() {
+        System.out.print("Enter acc no: ");
+        int no = in.nextInt();
+        in.nextLine();
+        Acc a = find(no);
+        if (a != null) {
+            System.out.print("New email: ");
+            String m = in.nextLine();
+            System.out.print("New phone: ");
+            String p = in.nextLine();
+            a.update(m, p);
+        } else {
+            System.out.println("Acc not found!");
+        }
+    }
+
+    void menu() {
+        while (true) {
+            System.out.println("\n*** Banking Menu ***");
+            System.out.println("1. New account");
+            System.out.println("2. Deposit");
+            System.out.println("3. Withdraw");
+            System.out.println("4. Show account");
+            System.out.println("5. Update contact");
+            System.out.println("6. Exit");
+            System.out.print("Choice: ");
+            int ch = in.nextInt();
+
+            switch (ch) {
+                case 1: makeAcc(); break;
+                case 2: doDeposit(); break;
+                case 3: doWithdraw(); break;
+                case 4: showAcc(); break;
+                case 5: changeContact(); break;
+                case 6: 
+                    System.out.println("Bye bye!");
+                    return;
+                default: 
+                    System.out.println("Wrong choice!");
+            }
+        }
+    }
+}
+
+public class BankApp {
+    public static void main(String[] args) {
+        UI ui = new UI(100);
+        System.out.println("Welcome to Bank App!");
+        ui.menu();
     }
 }
