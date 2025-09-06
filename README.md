@@ -1,1 +1,2 @@
-# college-wow-wow-wow-wow
+# this repo is for java assignments
+<>3
